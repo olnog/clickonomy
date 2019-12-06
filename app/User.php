@@ -36,4 +36,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+    public static function fetchNewHome(){
+	$land = Land::whereNull('userID')->inRandomOrder()->limit(1)->get();
+	foreach ($land as $cell){
+		return $cell->id;
+	}
+	return null;
+    }
 }

@@ -28,12 +28,12 @@
 		display:none;
 	}
 	table{
-		border:10px;
 	}
 	td{
-		width:30px;
-		height:30px;
+		width:75px;
+		height:75px;
 		text-align:center;
+		border:15px solid black;
 	}
 	.empty{
 		background-color:grey;
@@ -56,7 +56,7 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 	</head>
 	<body>
-		<div id='startMenu'>
+		<div id='startMenu' class='hidden'>
 			Clicks:0
 			<input id='start' class='worker clicker' type='button' 
 			value='+1'>
@@ -82,7 +82,7 @@
 		  </li>
 		</ul>
 	</div><div id='land' class='bottomBar'>
-		<table id='landContainer' class='hidden'>
+		<table id='landContainer' class=''>
 		
 		</table>
 	</div><div id='capital' class='hidden bottomBar'>

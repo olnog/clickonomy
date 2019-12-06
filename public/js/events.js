@@ -23,7 +23,6 @@ $(document).on('click', '.buildBuilding', function(event){
 	refreshUI();
 });
 $(document).on ("click", ".clicker", function(event){
-	
 	updateClickCounter(fetchClickCounter()+1);
 	var chanceToCreateNewPerson = fetchChanceToCreateNewPerson();
 	var floorChance = fetchFloorChance();

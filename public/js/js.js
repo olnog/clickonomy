@@ -5,7 +5,6 @@ $.getScript('js/events.js');
 $.getScript('js/capital.js');
 $.getScript('js/labor.js');
 $.getScript('js/ui.js');
-createLand(4);
 
 function createLand(size){
 	var htmlStr;
@@ -16,7 +15,7 @@ function createLand(size){
 		for (var x=0; x<size; x++){
 			var landType = landArr[fetchRandomNum(1,4)-1];
 			htmlStr+="<td class='land " + landType + "'>"
-			if (startPointNeeded && (fetchRandomNum(1, size*size)==1 || (x==size-1 && x==y))){
+			if (startPointNeeded && (fetchRandomNum(1, (size*size)/2)==1 || (x==size-1 && x==y))){
 				htmlStr+="X";
 				startPointNeeded=false;
 			}

@@ -12,9 +12,17 @@
 */
 
 Route::get('/', function () {
-    return view('public');
+	if (auth()){
+		return redirect()->action('HomeController@index'); 
+	} else {
+		return view('auth/login');
+	}
 });
-
+Route::resources([
+	'land'=>'LandController',
+	'capital'=>'CapitalController',
+	'labor'=>'LaborController'
+]);
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
