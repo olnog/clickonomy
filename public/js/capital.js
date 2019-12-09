@@ -1,43 +1,29 @@
 function checkFoodLimit(numOfResources, numOfClickers){
-	var foodLimit = fetchFoodLimit();
-	if (numOfResources==foodLimit){
+	if (numOfResources==capital.foodLimit){
 		return numOfResources;
-	} else if (numOfResources + numOfClickers>foodLimit){
-		return foodLimit;
+	} else if (numOfResources + numOfClickers>capital.foodLimit){
+		return capital.foodLimit;
 	}
 	return numOfResources;
 }
-function createStoneTool(toolType){
-	var numOfTools = fetch(toolType)
-	var numOfToolmakers = fetch('Toolmakers');
-	var stone = fetch ('Stone');
-	var wood = fetch('Wood');
-	var toolDelta=numOfToolmakers;
-	if (wood<numOfToolmakers && stone<numOfToolmakers){
-		if (wood==0 || stone==0){
+function createTool(toolType){
+	var toolDelta=labor.toolmakers;
+	if (capital.wood<labor.toolmakers && capital.stone<labor.toolmakers){
+		if (capital.wood==0 || capital.stone==0){
 			return;
 		}
-		toolDelta = wood>stone ? stone : wood;
+		toolDelta = capital.wood>capital.stone ? capital.stone : capital.wood;
 	} 
-	update('Wood', wood - toolDelta);
-	update('Stone', stone - toolDelta);
-	update(toolType, numOfTools+toolDelta);
 }
 function createWeapon(weaponType){
-	var numOfWeapons = fetch(weaponType);
-	var numOfWeaponmakers = fetch('Weaponmakers');
-	var stone = fetch('Stone');
-	var wood = fetch('Wood');
-	var weaponDelta=numOfWeaponmakers;
-	if (wood<numOfWeaponmakers && stone<numOfWeaponmakers){
-		if (wood==0 || stone==0){
+
+	var weaponDelta=labor.weaponmakers;
+	if (capital.wood<labor.weaponmakers && capital.stone<labor.weaponmakers){
+		if (capital.wood==0 || capital.stone==0){
 			return;
 		}
-		weaponDelta = wood>stone ? stone : wood;
+		weaponDelta = capital.wood>capital.stone ? capital.stone : capital.wood;
 	} 
-	update('Wood', wood - weaponDelta);
-	update('Stone', stone - weaponDelta);
-	update(weaponType, numOfWeapons+weaponDelta);
 }
 function destroyResources(){
 	var capitalArr = fetchListOfResources();
@@ -104,15 +90,13 @@ function updateFoodLimit(n){
 	$('#foodLimit').html(n);
 	
 }
-function useTools(clickers){
-	var toolType = fetchRelevantToolType(clickers);
-	var numOfTools = fetch(toolType);
-	var numOfRelevantTools = numOfTools;
-	var numOfClickers = fetch(clickers);
-	if (numOfClickers<numOfTools){
-		numOfRelevantTools=numOfClickers;
+function useTools(laborType){
+	var toolType = fetchRelevantToolType(laborType);
+	var numOfRelevantTools = capital[toolType];
+	if (labor[laborType]<capital[toolType]){
+		numOfRelevantTools=labor[laborType];
 	}
-	if (numOfTools==0){
+	if (capital[toolType]==0){
 		return;
 	}
 	var numOfDestroyedTools=0;
@@ -122,5 +106,5 @@ function useTools(clickers){
 			numOfDestroyedTools++;
 		}
 	}
-	update(toolType, numOfTools-numOfDestroyedTools);
+	capital[toolType]-=numOfDestroyedTools;
 }

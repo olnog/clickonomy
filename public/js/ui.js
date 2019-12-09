@@ -126,10 +126,10 @@ function reveal(selector){
 
 function updateNewPopProgress(){
 	var chanceToCreateNewPerson = fetchChanceToCreateNewPerson();
-	var campfireFloorChance = fetchCampfireFloorChance()*.01;
-	var clickCounter = fetchClickCounter();
-	var floorChance = fetchFloorChance()*.01;
-	var newPopCent =  (clickCounter / chanceToCreateNewPerson)+floorChance+campfireFloorChance;
+	var campfireFloorChance = labor.campfireFloorChance*.01;
+
+	var floorChance = labor.floorChance*.01;
+	var newPopCent =  (labor.clickCounter / chanceToCreateNewPerson)+floorChance+campfireFloorChance;
 
 
 	if (newPopCent<1 && newPopCent>0){

@@ -23,22 +23,22 @@ $(document).on('click', '.buildBuilding', function(event){
 	refreshUI();
 });
 $(document).on ("click", ".clicker", function(event){
-	updateClickCounter(fetchClickCounter()+1);
+	labor.clickCounter++;
 	var chanceToCreateNewPerson = fetchChanceToCreateNewPerson();
-	var floorChance = fetchFloorChance();
-	var numOfWorkers = fetch('Workers');
-	var numOfFarmers = fetch('Farmers');
-	var numOfPeople = fetch('People');
+	labor.floorChance = 0;
+	if (labor.clickCounter>=labor.people){
+		 floorChance= (labor.clickCounter-labor.people);
+	}
+	
+
 	if ($('#' + event.target.id).hasClass('makeStoneTool')){
 		var typeOfTool = event.target.id.substring(4) + 's';
-		createStoneTool(typeOfTool);
+		createTool(typeOfTool);
 	} else if ($('#' + event.target.id).hasClass('makeStoneWeapon')){
 		var typeOfWeapon = event.target.id.substring(4) + 's';
 		createWeapon(typeOfWeapon);
 	} else if (event.target.id == 'work' || event.target.id=='start'){
-		var numOfClicks = fetch('Clicks');
-		numOfClicks+=numOfWorkers;
-		update('Clicks', numOfClicks);
+		capital.clicks+=labor.workers;
 	} else {
 		var clickers;
 		switch (event.target.id){
@@ -53,27 +53,41 @@ $(document).on ("click", ".clicker", function(event){
 				break;
 		}		
 		var resourceType = fetchRelevantResources(clickers, 1);
-		var numOfResources = fetch(resourceType);
-		var numOfClickers = fetch(clickers);
 		var numOfTools = fetchNumOfRelevantTools(clickers);
 		useTools(clickers);
-		numOfResources+=numOfClickers+numOfTools;
+		capital[resourceType]+=labor[clickers]+numOfTools;
 		if (resourceType=='Food'){
-			checkFoodLimit(numOfResources, numOfClickers);
+			checkFoodLimit(capital[resourceType], labor[clickers]);
 		}		
-		update(resourceType, numOfResources);
+
 	}
 	if (event.target.id=='chop' && $('#campfire').hasClass('hidden')
-	&& fetch('Wood')>=fetch('Lumberjacks')){
-		reveal('#camfire');
+	&& capital.wood>=labor.people){
+		reveal('#campfire');
 	}
-	if (numOfPeople<fetchFoodLimit() && fetchRandomNum(1, chanceToCreateNewPerson-fetchCampfireFloorChance())<=floorChance){
-		updateCampfireFloorChance(0);
-		numOfWorkers++;
-		numOfPeople++;
-		updateClickers('Workers', numOfWorkers);
-		update('People', numOfPeople);
-		updateClickCounter(0);
+	if (labor.people<fetchFoodLimit() && fetchRandomNum(1, chanceToCreateNewPerson-labor.campfireFloorChance)<=labor.floorChance){
+		labor.campfireFloorChance=0;
+		labor.workers++;
+		labor.people++;
+		labor.clickCounter=0;
+	}
+	console.log(labor);
+	console.log(capital);
+	if (!clickerTimeout>0){
+		clickerTimeout = setTimeout(function(){
+			$.ajax({
+				headers:{'X-CSRF-TOKEN': 
+						$('meta[name="csrf-token"]').attr('content')},
+			  url: '/capital/2',
+			  type: 'PUT',
+			  data: "action=work",
+			  success: function(data) {
+			    refreshCapitalWindow();
+			  }
+			});
+			clearTimeout(clickerTimeout);
+			clickerTimeout=0;
+		}, 2000);
 	}
 	updateNewPopProgress();
 	refreshUI();

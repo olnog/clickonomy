@@ -1,29 +1,27 @@
 var flashingUI;
+var clickerTimeout;
 var timer;
+
+
 $.getScript('js/building.js');
 $.getScript('js/events.js');
 $.getScript('js/capital.js');
 $.getScript('js/labor.js');
 $.getScript('js/ui.js');
+var siteRoot = getBaseUrl();
+var capital;
+$.ajax({ url: siteRoot + 'capital/2', success: function(data) { capital = JSON.parse(data); console.log(capital);} })
 
-function createLand(size){
-	var htmlStr;
-	var landArr = ['empty', 'plains', 'forest', 'mountain'];
-	var startPointNeeded=true;
-	for (var y=0; y<size; y++){
-		htmlStr+='<tr>';
-		for (var x=0; x<size; x++){
-			var landType = landArr[fetchRandomNum(1,4)-1];
-			htmlStr+="<td class='land " + landType + "'>"
-			if (startPointNeeded && (fetchRandomNum(1, (size*size)/2)==1 || (x==size-1 && x==y))){
-				htmlStr+="X";
-				startPointNeeded=false;
-			}
-			htmlStr+="</td>";
-		}
-		htmlStr+='</tr>';
-	}
-	$('#landContainer').html(htmlStr);
+var labor; 
+$.ajax({ url: siteRoot + 'labor/2', success: function(data) { labor = JSON.parse(data); console.log(labor);} })
+refreshCapitalWindow();
+refreshLaborWindow();
+
+function refreshCapitalWindow(){
+	$.ajax({ url: siteRoot + 'capital', success: function(data) { $('#capital').html(data); } });
+}
+function refreshLaborWindow(){
+	$.ajax({ url: siteRoot + 'labor', success: function(data) { $('#labor').html(data); } });
 }
 function automate(){
 	var campfireBurning = isCampfireBurning();
@@ -89,25 +87,17 @@ function fetchCampfireFloorChance(){
 function fetchChanceToCreateNewPerson (){
 	return fetch('People')*2;
 }
-function fetchClickCounter(){
-	return Number($('#clickCounter').val());
-}
-function fetchFloorChance(){
-	var campfireFloorChance = fetchCampfireFloorChance();
-	var clickCounter = fetchClickCounter();
-	var floorChance = 0;
-	var numOfPeople = fetch('People');
-	if (clickCounter>=numOfPeople){
-		 floorChance= (clickCounter-numOfPeople);
-	}
-	return floorChance;
-}
+
 
 
 function fetchRandomNum (floor, ceiling){
 	return Math.floor(Math.random() * ceiling) + floor;
 }
 
+function getBaseUrl() {
+    var re = new RegExp(/^.*\//);
+    return re.exec(window.location.href);
+}
 
 
 function isCampfireBurning(){
@@ -165,8 +155,6 @@ function updateCampfire(){
 function updateCampfireFloorChance(n){
 	$('#campfireFloorChance').val(n);
 }
-function updateClickCounter(n){
-	$('#clickCounter').val(n);
-}
+
 
 

@@ -23,6 +23,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+	    return view('home', [
+	   	'capital'=>\App\Capital::where('userID', \Auth::id())->first(), 
+	   	'labor'=>\App\Labor::where('userID', \Auth::id())->first() 
+	    ]);
     }
 }
